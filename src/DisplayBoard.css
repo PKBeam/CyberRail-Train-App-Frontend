@@ -1,0 +1,102 @@
+:root {
+  --h1: #929292;
+  --h2: #FF9400;
+  --h3: #CA2A7A;
+  --h4: #0376BB;
+  --h5: #05A89D;
+  --h6: #1EB100;
+  --h7: #FE968D;
+  --l1: #41B0F6;
+  --l2: #ED230D;
+}
+
+@keyframes animate-scroll {
+  0% {
+    top: 0%;
+  }
+  50% {
+    top: -140%;
+    animation-timing-function: steps(1, end);
+  }
+  51% {
+    top: 100%;
+  }
+  100% {
+    top: 0%;
+  }
+}
+
+div {
+  font-family: "Bahnschrift";
+}
+
+nav * {
+  font-family: "Helvetica";
+}
+
+li {
+  font-size: 24px;
+}
+
+h1 {
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 35px
+}
+
+h2 {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+
+.line-H1 {
+  color: var(--h1);
+  background-color: var(--h1);
+}
+
+.line-H2 {
+  color: var(--h2);
+  background-color: var(--h2);
+}
+
+.line-H3 {
+  color: var(--h3);
+  background-color: var(--h3);
+}
+
+.line-H4 {
+  color: var(--h4);
+  background-color: var(--h4);
+}
+
+.line-H5 {
+  color: var(--h5);
+  background-color: var(--h5);
+}
+
+.line-H6 {
+  color: var(--h6);
+  background-color: var(--h6);
+}
+
+.line-H7 {
+  color: var(--h7);
+  background-color: var(--h7);
+}
+
+.line-L1 {
+  color: var(--l1);
+  background-color: var(--l1);
+}
+
+.line-L2 {
+  color: var(--l2);
+  background-color: var(--l2);
+}
+
+@font-face {
+  font-family: 'Bahnschrift';
+  src: url('BAHNSCHRIFT.TTF') format("truetype-variations");
+  font-weight: 1 999;
+}
