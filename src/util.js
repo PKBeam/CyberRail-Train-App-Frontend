@@ -1,4 +1,4 @@
-export const BACKEND_URL = "http://api.mc.moguserver.space"
+export const BACKEND_URL = "https://api.mc.moguserver.space"
 
 export function recalculateWorldTime(refTime, timestamp) {
   return refTime + 72 * (Date.now()/1000 - timestamp)
