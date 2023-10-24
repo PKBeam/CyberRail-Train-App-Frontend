@@ -38,14 +38,13 @@ function getWait(trainTime, serverTime) {
 }
 
 function getIntermediateStation(schedule) {
-  let stops = schedule.nextStops.slice(1, schedule.nextStops.length - 1).find(s => s.isInterchange)
+  let stops = schedule.nextStops.slice(1, schedule.nextStops.length - 1).find(s => s.isInterchange && s.stationName !== schedule.nextStops[schedule.nextStops.length - 1].stationName)
   return stops == null ? null : stops.stationName
 }
 
 function DisplayBoard(props) {
   const [containerStyle, setContainerStyle] = useState({display: "flex",position: "absolute", width: "80%", left: "0"})
   const [trainLineStyle, setTrainLineStyle] = useState({})
-  const [animation, setAnimation] = useState({})
   const containerRef = useRef(null)
   const contentRef = useRef(null)
   const trainLineRef = useRef(null)
@@ -77,7 +76,7 @@ function DisplayBoard(props) {
       newStyle.animation = `animate-scroll-${props.platform} ${numStations * 2.5}s linear infinite`
 
       let style = document.getElementsByClassName(`board-animation-${props.platform}`)[0];
-      if (style.id != `${contentRef.current.clientHeight}`) {
+      if (style.id !== `${contentRef.current.clientHeight}`) {
         style.id = `${contentRef.current.clientHeight}`
         let styleSheet = style.sheet
         while (styleSheet.rules.length > 0) {
@@ -137,8 +136,8 @@ function DisplayBoard(props) {
         <div style={containerStyle} className="py-0">
           {hasSchedule && nextSchedule.nextStops.length > 1 && <div style={trainLineStyle} className={"mr-5 line-" + nextSchedule.trainLine} ref={trainLineRef}></div>}
           <ul style={{position: "absolute"}} className="ml-4 mt-5" ref={contentRef}>
-            {hasSchedule && nextSchedule.nextStops.slice(1).map(station =>
-              <li key={"station-" + station.stationName} style={{display: "flex", height:"45px", alignItems: "center"}}>
+            {hasSchedule && nextSchedule.nextStops.slice(1).map((station, i) =>
+              <li key={"station-" + station.stationName + "-" + i} style={{display: "flex", height:"45px", alignItems: "center"}}>
                 {station.isInterchange ?
                   <div style={{height: "20px",width: "40px", borderRadius: "15px", backgroundColor: "white", borderStyle: "solid", color: "black", marginRight: "2px"}}/>
                   :
@@ -167,7 +166,7 @@ function DisplayBoard(props) {
             height: "25%",
             justifyContent: "end"
           }}>
-            Arrives{getWait(nextSchedule.time, props.serverTime) != "Now" && " in"}<br/><h1 className="mt-1">{getWait(nextSchedule.time, props.serverTime)}</h1>
+            Arrives{getWait(nextSchedule.time, props.serverTime) !== "Now" && " in"}<br/><h1 className="mt-1">{getWait(nextSchedule.time, props.serverTime)}</h1>
           </div>}
         </div>
       </div>

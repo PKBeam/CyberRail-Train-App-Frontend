@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
-import { Dropdown, Container } from 'react-bulma-components'
+import { Dropdown } from 'react-bulma-components'
 import { BACKEND_URL } from './util.js'
 import TrainLineIcon from './TrainLineIcon.js'
 

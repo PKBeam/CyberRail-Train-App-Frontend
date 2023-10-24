@@ -20,8 +20,8 @@ function NetworkMap(props) {
   return (
     <div className="p-6" style={{display: "flex", justifyContent: "center"}}>
       {map !== "" && <div style={{position: "relative", height: "0", width: "0", top: "1rem", left: "1rem"}}>
-        <div className="has-background-dark has-text-light" style={{webkitUserSelect: "none", userSelect: "none", cursor: "pointer", lineHeight: "50px", textAlign: "center", fontSize: "50px", width: "50px", height: "50px", borderRadius: "15px"}} onClick={() => setZoom(Math.min(10, zoom + 0.1))}>+</div>
-        <div className="mt-2 has-background-dark has-text-light" style={{webkitUserSelect: "none", userSelect: "none", cursor: "pointer", lineHeight: "50px", textAlign: "center", fontSize: "50px", width: "50px", height: "50px", borderRadius: "15px"}} onClick={() => setZoom(Math.max(1, zoom - 0.1))}>-</div>
+        <div className="has-background-dark has-text-light" style={{WebkitUserSelect: "none", userSelect: "none", cursor: "pointer", lineHeight: "50px", textAlign: "center", fontSize: "50px", width: "50px", height: "50px", borderRadius: "15px"}} onClick={() => setZoom(Math.min(10, zoom + 0.1))}>+</div>
+        <div className="mt-2 has-background-dark has-text-light" style={{WebkitUserSelect: "none", userSelect: "none", cursor: "pointer", lineHeight: "50px", textAlign: "center", fontSize: "50px", width: "50px", height: "50px", borderRadius: "15px"}} onClick={() => setZoom(Math.max(1, zoom - 0.1))}>-</div>
       </div>}
       <div style={{width: "100%", height: "87vh", overflow: "scroll", borderRadius: "20px"}} dangerouslySetInnerHTML={{__html: map}}/>
     </div>
