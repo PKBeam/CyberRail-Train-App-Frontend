@@ -1,4 +1,7 @@
 body {
-  background-color: hsl(0, 0%, 21%);
   height: 100vh;
+  background-color: hsl(0, 0%, 21%);
+}
+.dark {
+  background-color: hsl(0, 0%, 21%);
 }

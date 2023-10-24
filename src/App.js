@@ -1,12 +1,11 @@
 import './App.css';
 import React, { Component } from 'react';
+import NetworkMap from './NetworkMap.js'
 import DisplayBoards from './DisplayBoards.js'
 import AppNav from './AppNav.js'
 import { BACKEND_URL } from './util.js'
 
 class App extends Component {
-
-  timer = false
 
   constructor(props) {
     super(props);
@@ -14,22 +13,22 @@ class App extends Component {
       serverTime: {
         worldTimeTicks: 0,
         worldTimeSecs: 0,
-        checkedAt: Date.now()/1000
+        checkedAt: Date.now()/1000,
+        selectedItem: "nav-network-map",
+        networkMap: ""
       }
     };
   }
 
   componentDidMount() {
+    this.navHandler({target: {id: "nav-network-map"}})
     this.getTime();
   }
 
   navHandler(selectedItem) {
-    let id = selectedItem.target.id
-    switch (id) {
-      case "nav-display-boards": break;
-      case "nav-timetables": break;
-      default: break;
-    }
+    this.setState({
+      selectedItem: selectedItem.target.id
+    })
   }
 
   getTime() {
@@ -50,7 +49,7 @@ class App extends Component {
             this.getTime();
           }, 60000)
           this.setState({serverTime: res}, () => {
-            console.log("Set world time to " + res.worldTimeSecs + " sec (" + res.worldTimeSecs/3600 + " hr)")
+            console.log("[INFO] Set world time to " + res.worldTimeSecs + " sec (" + res.worldTimeSecs/3600 + " hr)")
           })
         }
       })
@@ -58,12 +57,13 @@ class App extends Component {
   }
 
   render() {
-    console.log("AP " + this.state.serverTime.worldTimeSecs / 3600)
     return (
-      <div>
-          <AppNav handler={this.navHandler} serverTime={this.state.serverTime}/>
-        <div className="mt-6">
-          <DisplayBoards serverTime={this.state.serverTime}/>
+      <div className="dark">
+          <AppNav parent={this} serverTime={this.state.serverTime}/>
+        <div className="dark">
+          {this.state.selectedItem === "nav-display-boards" && <DisplayBoards serverTime={this.state.serverTime}/>}
+
+          {this.state.selectedItem === "nav-network-map" && <NetworkMap />}
         </div>
       </div>
     );

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import DisplayBoard from './DisplayBoard.js'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
 import { Dropdown, Container } from 'react-bulma-components'
 import { recalculateWorldTime, BACKEND_URL} from './util.js'
+import DisplayBoard from './DisplayBoard.js'
 
 class DisplayBoards extends Component {
   constructor(props) {
@@ -55,10 +55,8 @@ class DisplayBoards extends Component {
     for (let i = 0; i <= schedule.platforms; i++) {
       schedules.push([])
     }
-
     // reorder schedule to start from next train
     if (schedule.nextTrains.length > 0) {
-
       while (worldTime > schedule.nextTrains[0].time) {
         schedule.nextTrains.push(schedule.nextTrains.shift(1))
       }
@@ -79,7 +77,7 @@ class DisplayBoards extends Component {
   render() {
     return (
       <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
-        <div className="mb-6" >
+        <div className="mb-6 mt-6" >
           <Dropdown
             icon={<FontAwesomeIcon className="ml-3" icon={faAngleDown} />}
             label={this.state.selectedStation ?? "Select a station"}

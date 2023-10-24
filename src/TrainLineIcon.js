@@ -7,9 +7,10 @@ function TrainLineIcon(props) {
   const [boxStyle, setBoxStyle] = useState({height: props.height})
 
   useEffect(() => {
-    let newBoxStyle = {...boxStyle}
-    newBoxStyle.width = boxRef.current.clientHeight + "px"
-    setBoxStyle(newBoxStyle)
+    let boxHeight = boxRef.current.clientHeight
+    if (boxStyle.width !== boxHeight + "px") {
+      setBoxStyle({width: boxHeight + "px"})
+    }
   }, [boxStyle]);
 
   return (

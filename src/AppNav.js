@@ -16,7 +16,7 @@ function AppNav(props) {
   let timeNowSecs = time
   let timeNowMins = parseInt(timeNowSecs / 60) % 60
   let timeNowMinsPad = String(timeNowMins).padStart(2, "0")
-  let timeNowHours = (timeNowSecs / 3600)
+  let timeNowHours = (timeNowSecs / 3600) % 24
   let timeNowHours12 = parseInt(timeNowHours) > 12 ? parseInt(timeNowHours) - 12 : parseInt(timeNowHours)
   let amPm = (parseInt(timeNowHours) >= 12 ? " pm" : " am")
 
@@ -27,7 +27,10 @@ function AppNav(props) {
       <Navbar.Brand>
         <b className="navbar-item has-text-light ml-2">sab.gg train app 🚉</b>
       </Navbar.Brand>
-      <Navbar.Item id="nav-display-boards" className="has-background-grey-dark has-text-light" onClick={props.handler}>
+      <Navbar.Item id="nav-network-map" className="has-background-grey-dark has-text-light" onClick={props.parent.navHandler.bind(props.parent)}>
+        Network Map
+      </Navbar.Item>
+      <Navbar.Item id="nav-display-boards" className="has-background-grey-dark has-text-light" onClick={props.parent.navHandler.bind(props.parent)}>
         Display Boards
       </Navbar.Item>
       {/*<Navbar.Item id="nav-timetables" className="has-background-grey-dark has-text-light" onClick={props.handler}>

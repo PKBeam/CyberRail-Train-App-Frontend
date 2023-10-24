@@ -15,7 +15,7 @@
     top: 0%;
   }
   50% {
-    top: -140%;
+    top: -100%;
     animation-timing-function: steps(1, end);
   }
   51% {
