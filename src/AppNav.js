@@ -27,10 +27,13 @@ function AppNav(props) {
   return (
     <Navbar className="has-background-grey-dark">
       <Navbar.Brand>
-        <b className="navbar-item has-text-light ml-2">sab.gg train app 🚉</b>
+        <b className="navbar-item has-text-light ml-2">CyberRail 🚉</b>
       </Navbar.Brand>
       <Navbar.Item id="nav-network-map" className="has-background-grey-dark has-text-light" onClick={props.parent.navHandler.bind(props.parent)}>
         Network Map
+      </Navbar.Item>
+      <Navbar.Item id="nav-timetables" className="has-background-grey-dark has-text-light" onClick={props.parent.navHandler.bind(props.parent)}>
+        Timetables
       </Navbar.Item>
       <Navbar.Item id="nav-display-boards" className="has-background-grey-dark has-text-light" onClick={props.parent.navHandler.bind(props.parent)}>
         Display Boards

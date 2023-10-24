@@ -112,7 +112,7 @@ function DisplayBoard(props) {
         position: "relative",
         zIndex: "1"
       }} className="pl-4 has-background-light">
-        {hasSchedule && <TrainLineIcon height="65%" fontSize="40px" trainLine={nextSchedule.trainLine}/>}
+        {hasSchedule && <TrainLineIcon border="solid" height="65%" fontSize="40px" trainLine={nextSchedule.trainLine}/>}
         <div style={{
           display: "flex",
           flexDirection:"column",
@@ -160,7 +160,7 @@ function DisplayBoard(props) {
         }} className="py-4 px-0">
           <div>Platform<br/><h1 style={{fontSize: "40px"}} className="mt-2">{props.platform}</h1></div>
           {hasSchedule && <div>{nextSchedule.nextStops.length > 1 ? nextSchedule.serviceType : ""}</div>}
-          {hasSchedule && <div><TrainCarsIcon trainCars={nextSchedule.trainCars}/></div>}
+          {hasSchedule && <div><TrainCarsIcon trainName={nextSchedule.train} trainCars={nextSchedule.trainCars}/></div>}
           {hasSchedule && <div style={{
             display: "flex",
             flexDirection: "column",
@@ -192,7 +192,7 @@ function DisplayBoard(props) {
         {props.schedule.slice(1, 3).map((schedule, i) =>
           <div key={"next-train-" + i} className="mt-2 mb-2" style={{display: "flex", justifyContent: "space-between", alignItems: "center", height: "45%"}}>
             <div style={{display: "flex"}}>
-            <TrainLineIcon height="100%" fontSize="24px" trainLine={schedule.trainLine}/>
+            <TrainLineIcon border="solid" height="100%" fontSize="24px" trainLine={schedule.trainLine}/>
             <div style={{display: "flex", flexDirection: "column", justifyContent: "center"}} className="ml-3">
             <div style={{fontSize: "18px", fontWeight: "bold"}}>{schedule.nextStops.length > 1 ? schedule.nextStops[schedule.nextStops.length - 1].stationName : "Terminating service"}</div>
             {getIntermediateStation(schedule) && <div style={{fontSize: "14px", lineHeight: "12px"}}>via {getIntermediateStation(schedule)}</div>}

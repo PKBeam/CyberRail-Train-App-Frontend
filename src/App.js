@@ -2,6 +2,7 @@ import './App.css';
 import React, { Component } from 'react';
 import NetworkMap from './NetworkMap.js'
 import DisplayBoards from './DisplayBoards.js'
+import Timetables from './Timetables.js'
 import AppNav from './AppNav.js'
 import { BACKEND_URL } from './util.js'
 
@@ -47,7 +48,7 @@ class App extends Component {
         } else {
           this.timer = setInterval(() => {
             this.getTime();
-          }, 60000)
+          }, 3*60000)
           this.setState({serverTime: res}, () => {
             console.log("[INFO] Set world time to " + res.worldTimeSecs + " sec (" + res.worldTimeSecs/3600 + " hr)")
           })
@@ -62,7 +63,7 @@ class App extends Component {
           <AppNav parent={this} serverTime={this.state.serverTime}/>
         <div className="dark">
           {this.state.selectedItem === "nav-display-boards" && <DisplayBoards serverTime={this.state.serverTime}/>}
-
+          {this.state.selectedItem === "nav-timetables" && <Timetables />}
           {this.state.selectedItem === "nav-network-map" && <NetworkMap />}
         </div>
       </div>
