@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
-import { Dropdown, Container } from 'react-bulma-components'
+import { Dropdown, Container, Form } from 'react-bulma-components'
 import { recalculateWorldTime, BACKEND_URL} from './util.js'
 import DisplayBoard from './DisplayBoard.js'
 
@@ -14,7 +14,8 @@ class DisplayBoards extends Component {
       selectedStationId: null,
       stationSchedule: [],
       stationPlatformSchedule: [],
-      stations: []
+      stations: [],
+      searchMatchStations: null
     };
   }
 
@@ -74,6 +75,21 @@ class DisplayBoards extends Component {
       .catch((r) => console.log(r));
   }
 
+  search(e) {
+    let query = e.target.value.trim().toUpperCase()
+    if (query !== "") {
+      let match = []
+      this.state.stations.forEach((s) => {
+        if (s.name.toUpperCase().includes(query) || s.code.includes(query)) {
+          match.push(s)
+        }
+      })
+      this.setState({searchMatchStations: match})
+    } else {
+      this.setState({searchMatchStations: null})
+    }
+  }
+
   render() {
     return (
       <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
@@ -83,20 +99,22 @@ class DisplayBoards extends Component {
             label={this.state.selectedStation ?? "Select a station"}
             onChange={i => this.updateSelectedStation(i)}
           >
-
-          {this.state.stations.map(station =>
-            (<Dropdown.Item
-              key={"dropdown-" + station.id}
-              renderAs="a"
-              value={station.id + "-" + station.name}
-            >
-              <div className="is-flex" style={{alignItems: "baseline"}}>
-                <div className="pr-2" style={{fontFamily: "andale mono"}}>{station.code}</div>
-                <div>{station.name}</div>
-              </div>
-            </Dropdown.Item>)
-          )}
-
+            <div className="py-0 px-1">
+              <Form.Input placeholder="Search by name or code..." className="m-2" style={{maxWidth: "95%"}} onChange={(e) => this.search(e)}/>
+            </div>
+            <Dropdown.Divider />
+            {(this.state.searchMatchStations ?? this.state.stations).map(station =>
+              (<Dropdown.Item
+                key={"dropdown-" + station.id}
+                renderAs="a"
+                value={station.id + "-" + station.name}
+              >
+                <div className="is-flex" style={{alignItems: "baseline"}}>
+                  <div className="pr-2" style={{fontFamily: "andale mono"}}>{station.code}</div>
+                  <div>{station.name}</div>
+                </div>
+              </Dropdown.Item>)
+            )}
           </Dropdown>
         </div>
         {this.state.selectedStation && <div className="p-5 has-background-grey-dark" style={{

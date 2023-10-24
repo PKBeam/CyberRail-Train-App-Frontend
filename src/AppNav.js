@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from 'react-bulma-components'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faClock } from '@fortawesome/free-solid-svg-icons'
 import { recalculateWorldTime } from './util.js'
 function AppNav(props) {
   const [time, setTime] = useState(recalculateWorldTime(props.serverTime.worldTimeSecs, props.serverTime.checkedAt))
@@ -37,7 +39,7 @@ function AppNav(props) {
         Timetables
       </Navbar.Item>*/}
       <div className="navbar-end">
-        <b className="navbar-item has-text-light mr-2">🕐 {timeString}</b>
+        <b className="navbar-item has-text-light mr-2"><FontAwesomeIcon className="mr-2" icon={faClock} /> {timeString}</b>
       </div>
     </Navbar>
   )
