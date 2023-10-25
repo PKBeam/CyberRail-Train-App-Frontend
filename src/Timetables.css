@@ -1,7 +1,20 @@
-thead th {
+.train-display {
   white-space: nowrap;
   font-weight: 900;
   font-size: 0.75em;
+  text-align: center !important;
+}
+
+input {
+  margin-right: 0.3rem;
+}
+
+.am-pm-display {
+  white-space: nowrap;
+  font-weight: 900;
+  font-size: 1em;
+  padding-top: 0.18rem !important;
+  padding-bottom: 0.18rem !important;
   text-align: center !important;
 }
 
@@ -18,12 +31,18 @@ tbody td {
   font-family: "Monaco";
   text-align: center !important;
   vertical-align: middle !important;
-  min-width: 4.7em !important;
+  width: 4.7em !important;
+}
+
+.route-description {
+  align-self: center;
+  font-size: 1.25em;
+  font-weight: 400;
 }
 
 div .table-container {
   width: 95%;
-  height: 80vh;
+  max-height: 80vh;
   border-radius: 10px;
   overflow: scroll;
 }

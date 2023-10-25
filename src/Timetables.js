@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
-import { Dropdown } from 'react-bulma-components'
-import { BACKEND_URL, addHoursToTime, timeSecsFromString } from './util.js'
+import { Dropdown, Form } from 'react-bulma-components'
+import { BACKEND_URL, addHoursToTime, timeSecsFromString, convert24hTo12h } from './util.js'
 import TrainLineIcon from './TrainLineIcon.js'
 import './Timetables.css';
 
@@ -12,7 +12,8 @@ class Timetables extends Component {
     this.state = {
       lines: [],
       selectedLine: null,
-      selectedLineSchedules: []
+      selectedLineSchedules: [],
+      use12Hour: false
     };
   }
 
@@ -40,27 +41,31 @@ class Timetables extends Component {
 
   renderTimetable(lineStations) {
     let schedules = []
+    let addEmpty = () => {schedules[schedules.length - 1].push(null)}
     scheduleLoop: for (let i = 0; i < this.state.selectedLineSchedules.length; i++) {
       let thisSchedule = this.state.selectedLineSchedules[i]
+      
       for (let j = 0; j < 24/thisSchedule.intervalHours; j++) {
         schedules.push([thisSchedule.train])
-        lineStations.forEach(() => {schedules[schedules.length - 1].push(null)})
+        lineStations.forEach(addEmpty)
         let n = -1
         for (let k = 0; k < thisSchedule.stops.length; k++) {
           let thisStop = thisSchedule.stops[k]
           //console.log(n, thisStop.stationName)
+          let N = n
           let index = lineStations.findIndex((s, i) =>
-            s.name === thisStop.stationName && i > n
+            s.name === thisStop.stationName && i > N
           )
 
           // this schedule is in the wrong direction of travel
-          if (index == -1) {
+          if (index === -1) {
             // reset and try next
             schedules.pop()
             continue scheduleLoop
           }
           n = index
-          schedules[schedules.length - 1][index + 1] = addHoursToTime(j * thisSchedule.intervalHours, thisStop.time)
+          let time = addHoursToTime(j * thisSchedule.intervalHours, thisStop.time, this.state.use12Hour)
+          schedules[schedules.length - 1][index + 1] = time
         }
       }
     }
@@ -71,7 +76,7 @@ class Timetables extends Component {
     let mostSharedStopIndex = 0
     let mostSharedStopCount = 0
 
-    for (let i = 0; i < lineStations.length; i++) {
+    for (let i = 0; i <= lineStations.length; i++) {
       let N = 0
       for (let j = 0; j < schedules.length; j++) {
         N += (schedules[j][i + 1] != null)
@@ -88,6 +93,17 @@ class Timetables extends Component {
       )
     })
 
+    // apply 12hr time
+    if (this.state.use12Hour) {
+      for (let i = 0; i < schedules.length; i++) {
+        let firstTime = schedules[i].slice(1).find(t => t != null)
+        schedules[i][0] = (parseInt(firstTime.split(":")[0]) >= 12) ? "pm" : "am"
+        for (let j = 1; j <= lineStations.length; j++) {
+          schedules[i][j] = schedules[i][j] != null && convert24hTo12h(schedules[i][j])
+        }
+      }
+    }
+
     // take transpose
     schedules = schedules[0].map((col, i) => schedules.map(row => row[i]));
     return schedules //{head: headRow, body: bodyRows}
@@ -96,11 +112,11 @@ class Timetables extends Component {
   render() {
     let lineStations = []
 
-    this.state.selectedLine?.stations.map((stations, i) => {
-      stations.map((station, j) => {
+    this.state.selectedLine?.stations.map((stations, i) =>
+      stations.map((station, j) =>
         lineStations.push(station)
-      })
-    })
+      )
+    )
 
     let lineStationsReversed = lineStations.slice().reverse()
 
@@ -109,46 +125,64 @@ class Timetables extends Component {
     let timetablesEmpty = (timetables[0] ?? timetables[1]) === null
     return (
       <div className="timetable-root">
-        <div className="mb-6 mt-6">
-          <Dropdown
-            icon={<FontAwesomeIcon className="ml-3" icon={faAngleDown} />}
-            label={(this.state.selectedLine && `${this.state.selectedLine.id} ${this.state.selectedLine.name} Line`) ?? "Select a line"}
-            onChange={(e) => this.selectLine(e)}
-          >
-            {(this.state.lines).map(line =>
-              (<Dropdown.Item
-                key={"dropdown-" + line.id}
-                renderAs="a"
-                value={`${line.id} ${line.name} Line`}
-                className="py-1"
-              >
-                <div className="train-line-entry is-flex">
-                  <TrainLineIcon height="100%" width="30px" borderRadius="3px" fontSize="19px" trainLine={line.id}/>
-                  <div className="ml-2">{line.name} Line</div>
-                </div>
-              </Dropdown.Item>)
-            )}
-          </Dropdown>
-        </div>
-        {this.state.selectedLine && <div className="table-container has-background-white-ter">
-          {!timetablesEmpty && timetables.map((t, i) => <table className="table is-bordered is-hoverable is-striped has-sticky-header has-sticky-column">
-            <thead>
-              <tr>
-                <th className="has-background-grey-lighter"></th>
-                {t[0].map((x, i) => <th key={"header-" + i} className="has-background-grey-lighter">{x}</th>)}
-              </tr>
-            </thead>
-            <tbody>
-              {stationLists[i].map((stn, j) =>
-                <tr>
-                  <th className="py-1">{stn.isInterchange && <b>{stn.name}</b>}{!stn.isInterchange && <p>{stn.name}</p>}</th>
-                    {t[j + 1].map((row, i) =>
-                      <td className="px-0 py-1" key={"station-name-" + i + "-" + j}>{row}</td>
-                    )}
-                </tr>
+        <div className="mb-6 mt-6 is-flex-direction-column">
+          <div>
+            <Dropdown
+              icon={<FontAwesomeIcon className="ml-3" icon={faAngleDown} />}
+              label={(this.state.selectedLine && `${this.state.selectedLine.id} ${this.state.selectedLine.name} Line`) ?? "Select a line"}
+              onChange={(e) => this.selectLine(e)}
+            >
+              {(this.state.lines).map(line =>
+                (<Dropdown.Item
+                  key={"dropdown-" + line.id}
+                  renderAs="a"
+                  value={`${line.id} ${line.name} Line`}
+                  className="py-1"
+                >
+                  <div className="train-line-entry is-flex">
+                    <TrainLineIcon height="100%" width="30px" borderRadius="3px" fontSize="19px" trainLine={line.id}/>
+                    <div className="ml-2">{line.name} Line</div>
+                  </div>
+                </Dropdown.Item>)
               )}
-            </tbody>
-          </table>)}
+            </Dropdown>
+          </div>
+          {this.state.selectedLine && <Form.Checkbox onClick={() => this.setState({use12Hour: !this.state.use12Hour})} className="mt-2 has-text-light" >Use 12-hour time</Form.Checkbox>}
+        </div>
+        {!timetablesEmpty && <div className="table-container has-background-white-ter">
+          {timetables.map((t, i) =>
+          <div key={`div1-${i}`}>
+            <div key={`div2-${i}`}className="is-flex py-3 px-3">
+              <TrainLineIcon key={`icon-${i}`} border="solid" height="100%" width="37px" borderRadius="7px" fontSize="19px" trainLine={this.state.selectedLine.id}/>
+              <div key={`div3-${i}`} className="route-description ml-3">
+              <b key={`b1-${i}`}>{stationLists[i][0].name}</b>{" to "}
+              <b key={`b2-${i}`}>{stationLists[i][stationLists[i].length - 1].name}</b>
+              {this.state.selectedLine.keyStations[0] && " via "}
+              <b key={`b3-${i}`}>{this.state.selectedLine.keyStations[0] && this.state.selectedLine.keyStations[0].name}</b></div>
+            </div>
+            <table key={`table-${i}`} className="table is-bordered is-hoverable is-striped has-sticky-header has-sticky-column">
+              <thead key={`thead-${i}`}>
+                <tr key={`tr-${i}`}>
+                  <th key={`thead-th-${i}`} className="has-background-grey-lighter"></th>
+                  {t[0].map((x, j) => <th key={`th-${i}-${j}`} className={"has-background-grey-lighter " + ((this.state.use12Hour) ? "am-pm-display" : "train-display")}>{x}</th>)}
+                </tr>
+              </thead>
+              <tbody key={`tbody-${i}`}>
+                {stationLists[i].map((stn, j) =>
+                  <tr key={`tr-${i}-${j}`}>
+                    <th key={`tbody-tr-${i}-${j}`} className="py-1">
+                      {stn.isInterchange && <b key={`tbody-b-${i}-${j}`}>{stn.name}</b>}
+                      {!stn.isInterchange && <p key={`tbody-p-${i}-${j}`}>{stn.name}</p>}
+                    </th>
+                      {t[j + 1].map((row, k) =>
+                        <td className="px-0 py-1" key={`station-name-${i}-${j}-${k}`}>{row}</td>
+                      )}
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>)}
+          <div className="my-4"/>
         </div>}
       </div>
     );

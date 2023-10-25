@@ -15,6 +15,7 @@ class DisplayBoards extends Component {
       stationSchedule: [],
       stationPlatformSchedule: [],
       stations: [],
+      lines: [],
       searchMatchStations: null
     };
   }
@@ -32,6 +33,7 @@ class DisplayBoards extends Component {
       }
     }, 1000)})
     this.getStations();
+    this.getLines();
   }
 
   componentWillUnmount() {
@@ -75,6 +77,13 @@ class DisplayBoards extends Component {
       .catch((r) => console.log(r));
   }
 
+  getLines() {
+    fetch(BACKEND_URL + "/api/lines")
+      .then((response) => response.json())
+      .then((json) => this.setState({lines: json}))
+      .catch((r) => console.log(r));
+  }
+
   search(e) {
     let query = e.target.value.trim().toUpperCase()
     if (query !== "") {
@@ -99,7 +108,7 @@ class DisplayBoards extends Component {
             label={this.state.selectedStation ?? "Select a station"}
             onChange={i => this.updateSelectedStation(i)}
           >
-            <div className="py-0 px-1">
+            <div className="py-0 px-1 has-background-light">
               <Form.Input placeholder="Search by name or code..." className="m-2" style={{maxWidth: "95%"}} onChange={(e) => this.search(e)}/>
             </div>
             <Dropdown.Divider />
@@ -129,7 +138,7 @@ class DisplayBoards extends Component {
           <div style={{display: "flex"}} className="m-0">
             {this.state.stationPlatformSchedule.map((schedule, i) =>
               i > 0 &&
-              (<div id={"disp-board-plat-" + i} key={"disp-board-plat-" + i} className={"mr-5"}><DisplayBoard serverTime={this.state.serverTime} schedule={schedule} platform={i}/></div>)
+              (<div id={"disp-board-plat-" + i} key={"disp-board-plat-" + i} className={"mr-5"}><DisplayBoard  serverTime={this.state.serverTime} schedule={schedule} lines={this.state.lines} platform={i}/></div>)
             )}
           <Container className="p-1"></Container>
           </div>

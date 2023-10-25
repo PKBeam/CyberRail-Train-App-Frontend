@@ -37,9 +37,17 @@ function getWait(trainTime, serverTime) {
   return hrs > 0 ? hrs + "h " + mins % 60 + "m" : mins + " min"
 }
 
-function getIntermediateStation(schedule) {
-  let stops = schedule.nextStops.slice(1, schedule.nextStops.length - 1).find(s => s.isInterchange && s.name !== schedule.nextStops[schedule.nextStops.length - 1].name)
-  return stops == null ? null : stops.name
+function getIntermediateStation(schedule, lines) {
+  if (lines == null) {
+    let stops = schedule.nextStops.slice(1, schedule.nextStops.length - 1).find(s => s.isInterchange && s.name !== schedule.nextStops[schedule.nextStops.length - 1].name)
+    return stops == null ? null : stops.name
+  } else {
+    let keyStations = lines.find((l) => l.id === schedule.trainLine).keyStations
+    let nextIntermediateStops = schedule.nextStops.slice(1, schedule.nextStops.length - 1).map((s) => s.name)
+    return nextIntermediateStops.find((s1) =>
+      keyStations.find((s2) => s2.name === s1)
+    )
+  }
 }
 
 function DisplayBoard(props) {
@@ -119,7 +127,7 @@ function DisplayBoard(props) {
         }} className="ml-4">
           {hasSchedule && <h1>{nextSchedule.nextStops.length > 1 ? nextSchedule.nextStops[nextSchedule.nextStops.length - 1].name : "Terminating service"}</h1>}
           {!hasSchedule && <h1>No scheduled services</h1>}
-          {hasSchedule && getIntermediateStation(nextSchedule) && <h2>{"via " + getIntermediateStation(nextSchedule)}</h2>}
+          {hasSchedule && getIntermediateStation(nextSchedule, props.lines) && <h2>{"via " + getIntermediateStation(nextSchedule, props.lines)}</h2>}
         </div>
       </div>
 
@@ -194,7 +202,7 @@ function DisplayBoard(props) {
             <TrainLineIcon border="solid" height="100%" fontSize="24px" trainLine={schedule.trainLine}/>
             <div style={{display: "flex", flexDirection: "column", justifyContent: "center"}} className="ml-3">
             <div style={{fontSize: "18px", fontWeight: "bold"}}>{schedule.nextStops.length > 1 ? schedule.nextStops[schedule.nextStops.length - 1].name : "Terminating service"}</div>
-            {getIntermediateStation(schedule) && <div style={{fontSize: "14px", lineHeight: "12px"}}>via {getIntermediateStation(schedule)}</div>}
+            {getIntermediateStation(schedule, props.lines) && <div style={{fontSize: "14px", lineHeight: "12px"}}>via {getIntermediateStation(schedule, props.lines)}</div>}
             </div>
             </div>
             <div style={{display: "flex", width: "50%", alignItems: "center", justifyContent: "space-between"}}>
