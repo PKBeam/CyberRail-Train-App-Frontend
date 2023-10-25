@@ -30,13 +30,32 @@ class Timetables extends Component {
 
   selectLine(e) {
     let lineId = e.slice(0, 2)
-    this.setState({
-      selectedLine: this.state.lines.filter((l) => l.id === lineId)[0]
-    })
     fetch(BACKEND_URL + "/api/schedules/line/" + lineId)
       .then((response) => response.json())
-      .then((json) => this.setState({selectedLineSchedules: json}))
+      .then((json) => this.setState({
+        selectedLine: this.state.lines.filter((l) => l.id === lineId)[0],
+        selectedLineSchedules: json
+      }))
       .catch((r) => console.log(r));
+  }
+
+  getTermini() {
+    let termini = [[], []]
+    for (let i = 0; i < this.state.selectedLine?.stations.length; i++) {
+      let stations = this.state.selectedLine?.stations[i]
+      if (i > 0 && stations.length <= 1) {
+        break;
+      }
+      termini[0].push(stations[0].name)
+    }
+    for (let i = this.state.selectedLine?.stations.length - 1; i >= 0; i--) {
+      let stations = this.state.selectedLine?.stations[i]
+      if (i < this.state.selectedLine?.stations.length - 1 && stations.length <= 1) {
+        break;
+      }
+      termini[1].push(stations.at(-1).name)
+    }
+    return termini
   }
 
   renderTimetable(lineStations) {
@@ -117,9 +136,9 @@ class Timetables extends Component {
         lineStations.push(station)
       )
     )
-
+    let termini = this.getTermini()
+    let terminiList = [termini, termini.slice().reverse()]
     let lineStationsReversed = lineStations.slice().reverse()
-
     let stationLists = [lineStations, lineStationsReversed]
     let timetables = [this.renderTimetable(lineStations), this.renderTimetable(lineStationsReversed)]
     let timetablesEmpty = (timetables[0] ?? timetables[1]) === null
@@ -149,39 +168,45 @@ class Timetables extends Component {
           </div>
           {this.state.selectedLine && <Form.Checkbox onClick={() => this.setState({use12Hour: !this.state.use12Hour})} className="mt-2 has-text-light" >Use 12-hour time</Form.Checkbox>}
         </div>
-        {!timetablesEmpty && <div className="table-container has-background-white-ter">
-          {timetables.map((t, i) =>
-          <div key={`div1-${i}`}>
-            <div key={`div2-${i}`}className="is-flex py-3 px-3">
-              <TrainLineIcon key={`icon-${i}`} border="solid" height="100%" width="37px" borderRadius="7px" fontSize="19px" trainLine={this.state.selectedLine.id}/>
-              <div key={`div3-${i}`} className="route-description ml-3">
-              <b key={`b1-${i}`}>{stationLists[i][0].name}</b>{" to "}
-              <b key={`b2-${i}`}>{stationLists[i][stationLists[i].length - 1].name}</b>
-              {this.state.selectedLine.keyStations[0] && " via "}
-              <b key={`b3-${i}`}>{this.state.selectedLine.keyStations[0] && this.state.selectedLine.keyStations[0].name}</b></div>
-            </div>
-            <table key={`table-${i}`} className="table is-bordered is-hoverable is-striped has-sticky-header has-sticky-column">
-              <thead key={`thead-${i}`}>
-                <tr key={`tr-${i}`}>
-                  <th key={`thead-th-${i}`} className="has-background-grey-lighter"></th>
-                  {t[0].map((x, j) => <th key={`th-${i}-${j}`} className={"has-background-grey-lighter " + ((this.state.use12Hour) ? "am-pm-display" : "train-display")}>{x}</th>)}
-                </tr>
-              </thead>
-              <tbody key={`tbody-${i}`}>
-                {stationLists[i].map((stn, j) =>
-                  <tr key={`tr-${i}-${j}`}>
-                    <th key={`tbody-tr-${i}-${j}`} className="py-1">
-                      {stn.isInterchange && <b key={`tbody-b-${i}-${j}`}>{stn.name}</b>}
-                      {!stn.isInterchange && <p key={`tbody-p-${i}-${j}`}>{stn.name}</p>}
-                    </th>
-                      {t[j + 1].map((row, k) =>
-                        <td className="px-0 py-1" key={`station-name-${i}-${j}-${k}`}>{row}</td>
-                      )}
+        {this.state.selectedLine && <div className="table-container has-background-white-ter">
+          {[0, 1].map((t, i) =>
+            <div key={`div1-${i}`}>
+              <div key={`div2-${i}`}className="is-flex py-3 px-3">
+                <TrainLineIcon key={`icon-${i}`} border="solid" height="100%" width="37px" borderRadius="7px" fontSize="19px" trainLine={this.state.selectedLine.id}/>
+                <div key={`div3-${i}`} className="route-description ml-2">
+                <b key={`b1-${i}`}>{terminiList[i][0][0]}</b>
+                {terminiList[i][0].length > 1 && " or "}
+                {terminiList[i][0].length > 1 && <b key={`b2-${i}`}>{terminiList[i][0].at(-1)}</b>}
+                {" to "}
+                <b key={`b3-${i}`}>{terminiList[i][1][0]}</b>
+                {terminiList[i][1].length > 1 && " or "}
+                {terminiList[i][1].length > 1 && <b key={`b4-${i}`}>{terminiList[i][1].at(-1)}</b>}
+                {this.state.selectedLine.keyStations[0] && " via "}
+                <b key={`b5-${i}`}>{this.state.selectedLine.keyStations[0] && this.state.selectedLine.keyStations[0].name}</b></div>
+              </div>
+              {timetables[i] && <table key={`table-${i}`} className="table is-bordered is-hoverable is-striped has-sticky-header has-sticky-column">
+                <thead key={`thead-${i}`}>
+                  <tr key={`tr-${i}`}>
+                    <th key={`thead-th-${i}`} className="has-background-grey-lighter"></th>
+                    {timetables[i][0].map((x, j) => <th key={`th-${i}-${j}`} className={"has-background-grey-lighter " + ((this.state.use12Hour) ? "am-pm-display" : "train-display")}>{x}</th>)}
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </div>)}
+                </thead>
+                <tbody key={`tbody-${i}`}>
+                  {stationLists[i].map((stn, j) =>
+                    <tr key={`tr-${i}-${j}`}>
+                      <th key={`tbody-tr-${i}-${j}`} className="py-1">
+                        {stn.isInterchange && <b key={`tbody-b-${i}-${j}`}>{stn.name}</b>}
+                        {!stn.isInterchange && <p key={`tbody-p-${i}-${j}`}>{stn.name}</p>}
+                      </th>
+                        {timetables[i][j + 1].map((row, k) =>
+                          <td className="px-0 py-1" key={`station-name-${i}-${j}-${k}`}>{row}</td>
+                        )}
+                    </tr>
+                  )}
+                </tbody>
+              </table>}
+              {!timetables[i] && <div className="ml-4 mb-3">No scheduled services</div>}
+            </div>)}
           <div className="my-4"/>
         </div>}
       </div>

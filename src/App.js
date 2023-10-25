@@ -4,6 +4,7 @@ import NetworkMap from './NetworkMap.js'
 import DisplayBoards from './DisplayBoards.js'
 import Timetables from './Timetables.js'
 import AppNav from './AppNav.js'
+import TrackMapEmbed from './TrackMapEmbed.js'
 import { BACKEND_URL } from './util.js'
 
 class App extends Component {
@@ -65,6 +66,7 @@ class App extends Component {
           {this.state.selectedItem === "nav-display-boards" && <DisplayBoards serverTime={this.state.serverTime}/>}
           {this.state.selectedItem === "nav-timetables" && <Timetables />}
           {this.state.selectedItem === "nav-network-map" && <NetworkMap />}
+          {this.state.selectedItem === "nav-track-map" && <TrackMapEmbed />}
         </div>
       </div>
     );
