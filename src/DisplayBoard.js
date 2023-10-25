@@ -38,8 +38,8 @@ function getWait(trainTime, serverTime) {
 }
 
 function getIntermediateStation(schedule) {
-  let stops = schedule.nextStops.slice(1, schedule.nextStops.length - 1).find(s => s.isInterchange && s.stationName !== schedule.nextStops[schedule.nextStops.length - 1].stationName)
-  return stops == null ? null : stops.stationName
+  let stops = schedule.nextStops.slice(1, schedule.nextStops.length - 1).find(s => s.isInterchange && s.name !== schedule.nextStops[schedule.nextStops.length - 1].name)
+  return stops == null ? null : stops.name
 }
 
 function DisplayBoard(props) {
@@ -117,7 +117,7 @@ function DisplayBoard(props) {
           flexDirection:"column",
           justifyContent: "center"
         }} className="ml-4">
-          {hasSchedule && <h1>{nextSchedule.nextStops.length > 1 ? nextSchedule.nextStops[nextSchedule.nextStops.length - 1].stationName : "Terminating service"}</h1>}
+          {hasSchedule && <h1>{nextSchedule.nextStops.length > 1 ? nextSchedule.nextStops[nextSchedule.nextStops.length - 1].name : "Terminating service"}</h1>}
           {!hasSchedule && <h1>No scheduled services</h1>}
           {hasSchedule && getIntermediateStation(nextSchedule) && <h2>{"via " + getIntermediateStation(nextSchedule)}</h2>}
         </div>
@@ -137,13 +137,13 @@ function DisplayBoard(props) {
           {hasSchedule && nextSchedule.nextStops.length > 1 && <div style={trainLineStyle} className={"mr-5 line-" + nextSchedule.trainLine} ref={trainLineRef}></div>}
           <ul style={{position: "absolute"}} className="ml-4 mt-5" ref={contentRef}>
             {hasSchedule && nextSchedule.nextStops.slice(1).map((station, i) =>
-              <li key={"station-" + station.stationName + "-" + i} style={{display: "flex", height:"45px", alignItems: "center"}}>
+              <li key={"station-" + station.name + "-" + i} style={{display: "flex", height:"45px", alignItems: "center"}}>
                 {station.isInterchange ?
                   <div style={{height: "20px",width: "40px", borderRadius: "15px", backgroundColor: "white", borderStyle: "solid", color: "black", marginRight: "2px"}}/>
                   :
                   <div style={{height: "15px",width: "30px"}} className={"ml-3 line-" + nextSchedule.trainLine}/>
                 }
-                <div style={{fontWeight: (station.isInterchange && "bold")}} className="ml-4">{station.stationName}</div>
+                <div style={{fontWeight: (station.isInterchange && "bold")}} className="ml-4">{station.name}</div>
               </li>
             )}
             {hasSchedule && nextSchedule.nextStops.length === 1 && <div className="ml-3" style={{fontSize: "24px"}}>This service terminates here.<br/>Please do not board this train.</div>}
@@ -193,7 +193,7 @@ function DisplayBoard(props) {
             <div style={{display: "flex"}}>
             <TrainLineIcon border="solid" height="100%" fontSize="24px" trainLine={schedule.trainLine}/>
             <div style={{display: "flex", flexDirection: "column", justifyContent: "center"}} className="ml-3">
-            <div style={{fontSize: "18px", fontWeight: "bold"}}>{schedule.nextStops.length > 1 ? schedule.nextStops[schedule.nextStops.length - 1].stationName : "Terminating service"}</div>
+            <div style={{fontSize: "18px", fontWeight: "bold"}}>{schedule.nextStops.length > 1 ? schedule.nextStops[schedule.nextStops.length - 1].name : "Terminating service"}</div>
             {getIntermediateStation(schedule) && <div style={{fontSize: "14px", lineHeight: "12px"}}>via {getIntermediateStation(schedule)}</div>}
             </div>
             </div>

@@ -41,7 +41,7 @@ class DisplayBoards extends Component {
   updateSelectedStation(newValue) {
     let [stationId, stationName] = newValue.split("-")
     this.setState({selectedStation: stationName, selectedStationId: stationId})
-    fetch(BACKEND_URL + "/api/schedules/" + stationId)
+    fetch(BACKEND_URL + "/api/schedules/station/" + stationId)
       .then((response) => response.json())
       .then((json) => this.setState({stationSchedule: json}, () => this.processNextTrains(this.state.stationSchedule)))
       .catch((r) => console.log(r));
@@ -110,7 +110,7 @@ class DisplayBoards extends Component {
                 value={station.id + "-" + station.name}
               >
                 <div className="is-flex" style={{alignItems: "baseline"}}>
-                  <div className="pr-2" style={{fontFamily: "andale mono"}}>{station.code}</div>
+                  <div className="monospace pr-2">{station.code}</div>
                   <div>{station.name}</div>
                 </div>
               </Dropdown.Item>)
