@@ -108,7 +108,7 @@ class DisplayBoards extends Component {
             label={this.state.selectedStation ?? "Select a station"}
             onChange={i => this.updateSelectedStation(i)}
           >
-            <div className="py-0 px-1 has-background-light">
+            <div className="py-0 px-1">
               <Form.Input placeholder="Search by name or code..." className="m-2" style={{maxWidth: "95%"}} onChange={(e) => this.search(e)}/>
             </div>
             <Dropdown.Divider />
