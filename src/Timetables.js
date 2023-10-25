@@ -141,7 +141,7 @@ class Timetables extends Component {
     let lineStationsReversed = lineStations.slice().reverse()
     let stationLists = [lineStations, lineStationsReversed]
     let timetables = [this.renderTimetable(lineStations), this.renderTimetable(lineStationsReversed)]
-    let timetablesEmpty = (timetables[0] ?? timetables[1]) === null
+    
     return (
       <div className="timetable-root">
         <div className="mb-6 mt-6 is-flex-direction-column">

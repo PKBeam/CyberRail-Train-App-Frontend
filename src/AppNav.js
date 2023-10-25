@@ -43,8 +43,8 @@ function AppNav(props) {
       </Navbar.Item>
       <div className="navbar-end">
       <b className="navbar-item has-text-light mr-2"><FontAwesomeIcon className="mr-2" icon={faClock} />
-          <div style={{width: "4.2em"}}>{timeString}</div>
-          <div style={{width: "6em"}}>({timeTicks} ticks)</div>
+          <div style={{width: "4.7em"}}>{timeString}</div>
+          <div style={{width: "7em"}}>({timeTicks} ticks)</div>
         </b>
       </div>
     </Navbar>

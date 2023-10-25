@@ -124,7 +124,7 @@ class DisplayBoards extends Component {
                   <div className="mr-1">{station.name}</div>
                   {this.state.lines.map((l, i) =>
                     (l.stations.find(ss => ss.find(s => s.name === station.name &&
-                    ((l.id[0] == "L" && station.code[0] == "X") || (l.id[0] != "L" && station.code[0] != "X"))
+                    ((l.id[0] === "L" && station.code[0] === "X") || (l.id[0] !== "L" && station.code[0] !== "X"))
 
                     ))) && <div key={`div-${i}`} className="ml-1"><TrainLineIcon height="100%" width="25px" borderRadius="3px" fontSize="15px" trainLine={l.id}/></div>
                   )}
