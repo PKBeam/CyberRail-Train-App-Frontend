@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
 import { Dropdown, Container, Form } from 'react-bulma-components'
 import { recalculateWorldTime, BACKEND_URL} from './util.js'
+import TrainLineIcon from './TrainLineIcon.js'
 import DisplayBoard from './DisplayBoard.js'
 
 class DisplayBoards extends Component {
@@ -119,8 +120,15 @@ class DisplayBoards extends Component {
                 value={station.id + "-" + station.name}
               >
                 <div className="is-flex" style={{alignItems: "baseline"}}>
-                  <div className="monospace pr-2">{station.code}</div>
-                  <div>{station.name}</div>
+
+                  <div className="mr-1">{station.name}</div>
+                  {this.state.lines.map(l =>
+                    (l.stations.find(ss => ss.find(s => s.name === station.name &&
+                    ((l.id[0] == "L" && station.code[0] == "X") || (l.id[0] != "L" && station.code[0] != "X"))
+
+                    ))) && <div  className="ml-1"><TrainLineIcon height="100%" width="25px" borderRadius="3px" fontSize="15px" trainLine={l.id}/></div>
+                  )}
+
                 </div>
               </Dropdown.Item>)
             )}
