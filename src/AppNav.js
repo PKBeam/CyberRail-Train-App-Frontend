@@ -38,9 +38,9 @@ function AppNav(props) {
       <Navbar.Item id="nav-display-boards" className="has-background-grey-dark has-text-light" onClick={props.parent.navHandler.bind(props.parent)}>
         Display Boards
       </Navbar.Item>
-      <Navbar.Item id="nav-track-map" className="has-background-grey-dark has-text-light" onClick={props.parent.navHandler.bind(props.parent)}>
+      {/*no HTTP iframes on HTTPS site  :( <Navbar.Item id="nav-track-map" className="has-background-grey-dark has-text-light" onClick={props.parent.navHandler.bind(props.parent)}>
         Track Map
-      </Navbar.Item>
+      </Navbar.Item>*/}
       <div className="navbar-end">
       <b className="navbar-item has-text-light mr-2"><FontAwesomeIcon className="mr-2" icon={faClock} />
           <div style={{width: "4.7em"}}>{timeString}</div>
