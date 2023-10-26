@@ -26,7 +26,7 @@ function NetworkMap(props) {
         <Button className="has-background-dark has-text-light" style={{lineHeight: "50px", textAlign: "center", fontSize: "25px", fontWeight: "700", width: "50px", height: "50px", borderRadius: "10px"}} onClick={() => setZoom(Math.min(10, zoom + 0.5))}><FontAwesomeIcon icon={faMagnifyingGlassPlus}/></Button>
         <Button className="mt-2 has-background-dark has-text-light" style={{lineHeight: "50px", textAlign: "center", fontSize: "25px", fontWeight: "700", width: "50px", height: "50px", borderRadius: "10px"}} onClick={() => setZoom(Math.max(1, zoom - 0.5))}><FontAwesomeIcon icon={faMagnifyingGlassMinus}/></Button>
       </div>}
-      <div style={{width: "100%", height: "87vh", overflow: "scroll", borderRadius: "15px", backgroundColor: "white"}} dangerouslySetInnerHTML={{__html: map}}/>
+      <div style={{width: "100%", maxHeight: "87vh", overflow: "overlay", borderRadius: "15px", backgroundColor: "white"}} dangerouslySetInnerHTML={{__html: map}}/>
     </div>
   );
 }

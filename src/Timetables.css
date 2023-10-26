@@ -28,7 +28,7 @@ th {
 
 tbody td {
   font-size: 0.9em;
-  font-family: "Monaco";
+  font-family: "Monaco", monospace;
   text-align: center !important;
   vertical-align: middle !important;
   width: 4.7em !important;
